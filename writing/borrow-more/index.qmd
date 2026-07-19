@@ -16,6 +16,7 @@ One applicant makes the point on their own. They asked for a loan of 409 Deutsch
 There is no coherent advice you could give this person. Smaller loans are rejected, so "borrow less" is out. Most larger loans are rejected too. The only route to a yes is to land inside one of two arbitrary green slivers, and nothing about the applicant explains where those slivers fall. No loan officer would ever say it. The model would, for four of the people it turned down.
 
 > **The finding, in four lines**
+>
 > - **What:** 4 of the 19 applicants that no smaller or shorter loan could rescue flip to approved by asking for a bigger one.
 > - **Why it matters:** the obvious advice to give them, "reduce your loan," is exactly backwards.
 > - **How I caught it:** an exhaustive grid over every smaller or shorter loan, then a probe the opposite way on the cases no reduction could fix.

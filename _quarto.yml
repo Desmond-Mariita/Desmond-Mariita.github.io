@@ -29,8 +29,7 @@ website:
 
 format:
   html:
-    theme: litera
-    css: styles.css
+    theme: [default, final.scss]
     toc: true
     toc-depth: 2
     smooth-scroll: true

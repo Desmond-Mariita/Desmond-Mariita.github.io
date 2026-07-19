@@ -1,47 +1,172 @@
 ---
 title: "Desmond Mariita"
-subtitle: "AI Assurance & Data Governance"
+pagetitle: "Desmond Mariita | AI Assurance & Data Governance"
+description: "I audit AI systems for trustworthiness and govern the data behind them. The output is evidence: reproducible tests, a signed self-assessment opinion, and claims that trace to artifacts."
+page-layout: custom
 toc: false
 ---
 
-I audit AI systems for trustworthiness: fairness, robustness, recourse, and whether their explanations are faithful. I also govern the data behind them. The output is evidence: reproducible tests, a signed self-assessment opinion, and claims that trace to artifacts.
+```{=html}
+<a class="skip-link" href="#content">Skip to content</a>
+<main id="content">
+<section class="page-shell hero" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow">AI Assurance &amp; Data Governance</p>
+    <h1 id="hero-title">Desmond <span>Mariita</span></h1>
+    <p class="hero-intro">I audit AI systems for trustworthiness: fairness, robustness, recourse, and whether their explanations are faithful. I also govern the data behind them. The output is evidence: reproducible tests, a signed self-assessment opinion, and claims that trace to artifacts.</p>
+    <p class="hero-proof">Every writeup here links back to the runnable, tagged repository that produced its numbers. The writeups are the narrative; the repos are the proof.</p>
+  </div>
 
-Every writeup here links back to the runnable, tagged repository that produced its numbers. The writeups are the narrative; the repos are the proof.
+  <div class="audit-mark">
+    <div class="audit-mark-top" aria-hidden="true">
+      <span>Fig. 1 / Recourse</span>
+      <span>Schematic</span>
+    </div>
+    <svg class="audit-figure" viewBox="0 0 560 320" role="img" aria-labelledby="figTitle figDesc">
+      <title id="figTitle">Approval score against requested loan amount</title>
+      <desc id="figDesc">A schematic curve rising with the requested loan amount. An applicant sits below the decision threshold and is rejected at the amount requested, and sits inside the approval band, and is approved, at a larger amount.</desc>
+      <rect x="60" y="26" width="470" height="94" fill="rgba(14,107,79,.12)"></rect>
+      <text class="svg-key" x="522" y="44" text-anchor="end" fill="#084d3a">approval band</text>
+      <line x1="60" y1="26" x2="60" y2="272" stroke="#b9bdb4" stroke-width="1"></line>
+      <line x1="60" y1="272" x2="530" y2="272" stroke="#b9bdb4" stroke-width="1"></line>
+      <line x1="60" y1="120" x2="530" y2="120" stroke="#084d3a" stroke-width="1.25" stroke-dasharray="5 4"></line>
+      <text class="svg-key" x="64" y="135" fill="#084d3a">decision threshold</text>
+      <path d="M 60 168 C 110 190, 155 212, 205 208 C 260 204, 310 160, 360 118 C 410 82, 470 66, 530 60" fill="none" stroke="#18201d" stroke-width="2.25" stroke-linecap="round"></path>
+      <line x1="205" y1="208" x2="205" y2="272" stroke="#9c3d18" stroke-width="1" stroke-dasharray="3 3"></line>
+      <circle cx="205" cy="208" r="5.5" fill="#9c3d18"></circle>
+      <text class="svg-key" x="215" y="238" fill="#9c3d18">rejected</text>
+      <line x1="441" y1="78" x2="441" y2="272" stroke="#084d3a" stroke-width="1" stroke-dasharray="3 3"></line>
+      <circle cx="441" cy="78" r="5.5" fill="#084d3a"></circle>
+      <text class="svg-key" x="452" y="104" fill="#084d3a">approved</text>
+      <text class="svg-axis" x="530" y="292" text-anchor="end">loan amount requested</text>
+      <text class="svg-axis" x="-26" y="18" transform="rotate(-90)" text-anchor="end">approval score</text>
+    </svg>
+    <p class="audit-caption"><strong>Schematic, not a data plot.</strong> The credit model would approve some rejected applicants only if they asked for a larger loan. Read the case study: <a href="writing/borrow-more/">When recourse runs backwards</a>.</p>
+    <div class="props-register" role="complementary" aria-label="Properties audited">
+      <span class="props-tag">Properties audited</span>
+      <ul>
+        <li>Recourse</li>
+        <li>Fairness</li>
+        <li>Robustness</li>
+        <li>Explanation faithfulness</li>
+      </ul>
+      <span class="props-tag">And</span>
+      <ul>
+        <li>Data governance</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-::: {.grid}
+<section class="section" aria-labelledby="flagship-title">
+  <div class="page-shell section-grid">
+    <div class="section-index" aria-hidden="true">
+      <span class="section-number">01</span>
+      <span class="section-label">Flagship record</span>
+    </div>
 
-::: {.g-col-12 .g-col-md-4 .hub-col}
-### Flagship audits
+    <div class="section-content">
+      <div class="flagship-head">
+        <h2 class="section-title" id="flagship-title">Audit evidence,<br>from claim to artifact.</h2>
+        <div class="status-stamp">
+          <strong>v1.1.2</strong>
+          signed
+        </div>
+      </div>
 
-An end-to-end **self-assessment of a high-risk EU AI Act credit-scoring model** across four properties (recourse, fairness, robustness, and a pre-registered explanation-faithfulness audit), with an Annex-IV-style governance pack, a signed audit opinion, and one-command reproduction. The faithfulness hypotheses were committed to a signed, timestamped record before the model was trained.
+      <article class="repository-card">
+        <div class="repository-main">
+          <p class="repository-kicker">Primary repository</p>
+          <h3 class="repository-title">
+            <a href="https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance">eu-ai-act-credit-assurance</a>
+          </h3>
+          <p class="repository-description">An end-to-end self-assessment of a high-risk EU AI Act credit-scoring model across four properties (recourse, fairness, robustness, and a pre-registered explanation-faithfulness audit), with an Annex-IV-style governance pack, a signed audit opinion, and one-command reproduction. The faithfulness hypotheses were committed to a signed, timestamped record before the model was trained.</p>
+        </div>
 
-[eu-ai-act-credit-assurance](https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance){.hub-link} (v1.1.2, signed)
+        <div class="repository-meta" aria-label="Repository metadata">
+          <div class="meta-cell">
+            <span class="meta-label">Version tag</span>
+            <span class="meta-value">v1.1.2</span>
+          </div>
+          <div class="meta-cell">
+            <span class="meta-label">Record state</span>
+            <span class="meta-value signed">signed</span>
+          </div>
+        </div>
+      </article>
 
-Five earlier interpretability projects, among them faithfulness benchmarking, modality attribution, calibration trade-offs, and mechanistic probing:
+      <div class="related-record">
+        <span class="record-label">In construction</span>
+        <div class="record-body">
+          <p>A specification for a benchmark whose faithfulness labels for VLM chain-of-thought will come from causal interventions, not LLM judges. Specification v1.0 is public and hash-pinned; no corpus is released yet.</p>
+          <a href="https://github.com/Desmond-Mariita/vlm-faithfulness-benchmark">vlm-faithfulness-benchmark</a>
+        </div>
+      </div>
 
-[interpretability-foundations](https://github.com/Desmond-Mariita/interpretability-foundations){.hub-link}
-:::
+      <div class="related-record">
+        <span class="record-label">Supporting repository</span>
+        <div class="record-body">
+          <p><a href="https://github.com/Desmond-Mariita/interpretability-foundations">Five earlier interpretability projects, among them faithfulness benchmarking, modality attribution, calibration trade-offs, and mechanistic probing</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-::: {.g-col-12 .g-col-md-4 .hub-col}
-### Writing
+<section class="section" aria-labelledby="writing-title">
+  <div class="page-shell section-grid">
+    <div class="section-index" aria-hidden="true">
+      <span class="section-number">02</span>
+      <span class="section-label">Writing</span>
+    </div>
 
-Writeups that live next to the code they describe.
+    <div class="section-content">
+      <div class="writing-intro">
+        <h2 class="section-title" id="writing-title">Cases from<br>the evidence.</h2>
+        <p>Technical writeups on model behavior, audit design, and how conclusions change under different tests.</p>
+      </div>
 
-**[When recourse runs backwards](writing/borrow-more/index.qmd)**: the credit model would approve some rejected applicants only if they asked for a *larger* loan. A model-risk case study.
+      <div class="articles">
+        <a class="article-row" href="writing/borrow-more/">
+          <span class="article-number">W.01</span>
+          <h3>When recourse runs backwards</h3>
+          <p>the credit model would approve some rejected applicants only if they asked for a larger loan; a model-risk case study</p>
+          <span class="article-arrow" aria-hidden="true">&#8599;</span>
+        </a>
 
-**[Faithfulness is metric-dependent](writing/faithfulness/index.qmd)**: SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime.
+        <a class="article-row" href="writing/faithfulness/">
+          <span class="article-number">W.02</span>
+          <h3>Faithfulness is metric-dependent</h3>
+          <p>SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime</p>
+          <span class="article-arrow" aria-hidden="true">&#8599;</span>
+        </a>
+      </div>
 
-[All writing →](writing/index.qmd)
-:::
+      <a class="all-writing" href="writing/">All writing &#8594;</a>
+    </div>
+  </div>
+</section>
 
-::: {.g-col-12 .g-col-md-4 .hub-col}
-### Credentials
+<section class="section" aria-labelledby="credentials-title">
+  <div class="page-shell section-grid">
+    <div class="section-index" aria-hidden="true">
+      <span class="section-number">03</span>
+      <span class="section-label">Credentials</span>
+    </div>
 
-MSc Cognitive Systems, University of Potsdam (expected 2026). Thesis: the faithfulness of chain-of-thought explanations in vision–language models. BSc Mathematics & Statistics. Ex-Data Steward at a 150-branch bank.
+    <div class="section-content credentials-layout">
+      <div class="credentials-copy">
+        <h2 class="section-title" id="credentials-title">Background</h2>
+        <p>MSc Cognitive Systems, University of Potsdam (expected 2026). Thesis: the faithfulness of chain-of-thought explanations in vision&ndash;language models. BSc Mathematics &amp; Statistics. Ex-Data Steward at a 150-branch bank.</p>
+      </div>
 
-Certification track in progress: **IAPP AIGP** (sitting ~Sept 2026), **ForHumanity FHCA**, **ISO/IEC 42001 Lead Auditor**, **AWS AI Practitioner**, **IAPP CIPP/E**.
-
-[More about me →](about.qmd)
-:::
-
-:::
+      <div class="certification-track" role="complementary" aria-labelledby="certification-title">
+        <h3 class="eyebrow" id="certification-title">Certification track</h3>
+        <p>In sequence: IAPP AIGP (sitting ~Sept 2026), then ForHumanity FHCA, ISO/IEC 42001 Lead Auditor, AWS AI Practitioner, and IAPP CIPP/E. None earned yet.</p>
+        <a class="about-link" href="about.html">About and credentials &#8594;</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+```

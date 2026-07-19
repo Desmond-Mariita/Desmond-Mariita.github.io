@@ -12,6 +12,7 @@ I set out to test whether my credit model's explanations were faithful. Same mod
 In Part 1, I audited the same model's *decisions* and found it would approve some rejected applicants only if they asked for a bigger loan. This piece is about a quieter failure in the same model: whether the *explanations* we attach to its decisions are telling the truth.
 
 > **The finding, in four lines**
+>
 > - **What:** same model: LIME below the random-ranking floor under a signed metric (−0.0305), comfortably above it under a movement metric (+0.090); TreeSHAP inconclusive under the first. Nothing changed but the ruler.
 > - **Why it matters:** "the model is explainable" is not a fact you can state without naming the metric behind it. For decisions like credit scoring, the law asks for explanations that are "meaningful."
 > - **How I found it:** one erasure test under three perturbation regimes, a direction-agnostic re-scoring of the conditional regime, and a retrain-based cross-check, all against a calibrated random-ranking floor.
