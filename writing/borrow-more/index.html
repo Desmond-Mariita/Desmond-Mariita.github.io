@@ -42,10 +42,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e0c369747a7c63d92e3a00793c14f2c1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-53a3eb1ff9330d44960d26a0ddb2dd24.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-69ae56c207022f444d1fd83f4ec94133.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,7 +76,6 @@ ul.task-list li input[type="checkbox"] {
 <style>html{ scroll-behavior: smooth; }</style>
 
 
-<link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="When recourse runs backwards: an AI-assurance case study in credit scoring – Desmond Mariita">
 <meta property="og:description" content="A credit model approved applicants it had rejected — after they asked for more money. Four applicants that no smaller or shorter loan could rescue flip to approved by borrowing more.">
 <meta property="og:image" content="https://desmond-mariita.github.io/writing/borrow-more/figures/risk-vs-amount.png">
@@ -212,7 +211,13 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>There is no coherent advice you could give this person. Smaller loans are rejected, so “borrow less” is out. Most larger loans are rejected too. The only route to a yes is to land inside one of two arbitrary green slivers, and nothing about the applicant explains where those slivers fall. No loan officer would ever say it. The model would, for four of the people it turned down.</p>
 <blockquote class="blockquote">
-<p><strong>The finding, in four lines</strong> - <strong>What:</strong> 4 of the 19 applicants that no smaller or shorter loan could rescue flip to approved by asking for a bigger one. - <strong>Why it matters:</strong> the obvious advice to give them, “reduce your loan,” is exactly backwards. - <strong>How I caught it:</strong> an exhaustive grid over every smaller or shorter loan, then a probe the opposite way on the cases no reduction could fix. - <strong>Deployer action:</strong> investigate as model risk; keep it out of customer-facing advice.</p>
+<p><strong>The finding, in four lines</strong></p>
+<ul>
+<li><strong>What:</strong> 4 of the 19 applicants that no smaller or shorter loan could rescue flip to approved by asking for a bigger one.</li>
+<li><strong>Why it matters:</strong> the obvious advice to give them, “reduce your loan,” is exactly backwards.</li>
+<li><strong>How I caught it:</strong> an exhaustive grid over every smaller or shorter loan, then a probe the opposite way on the cases no reduction could fix.</li>
+<li><strong>Deployer action:</strong> investigate as model risk; keep it out of customer-facing advice.</li>
+</ul>
 </blockquote>
 <section id="the-setup" class="level2">
 <h2 class="anchored" data-anchor-id="the-setup">The setup</h2>

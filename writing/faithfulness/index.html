@@ -77,10 +77,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e0c369747a7c63d92e3a00793c14f2c1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-53a3eb1ff9330d44960d26a0ddb2dd24.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-69ae56c207022f444d1fd83f4ec94133.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -111,7 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 
 
-<link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Faithfulness is metric-dependent: a credit-model audit across regimes, signs, and datasets – Desmond Mariita">
 <meta property="og:description" content="SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime; the verdicts do not reliably travel across datasets.">
 <meta property="og:image" content="https://desmond-mariita.github.io/writing/faithfulness/figures/faithfulness-metric-dependence.png">
@@ -244,7 +243,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>I set out to test whether my credit model’s explanations were faithful. Same model, same two explainers, and I could make them look faithful, unfaithful, or inconclusive by changing the measurement alone.</p>
 <p>In Part 1, I audited the same model’s <em>decisions</em> and found it would approve some rejected applicants only if they asked for a bigger loan. This piece is about a quieter failure in the same model: whether the <em>explanations</em> we attach to its decisions are telling the truth.</p>
 <blockquote class="blockquote">
-<p><strong>The finding, in four lines</strong> - <strong>What:</strong> same model: LIME below the random-ranking floor under a signed metric (−0.0305), comfortably above it under a movement metric (+0.090); TreeSHAP inconclusive under the first. Nothing changed but the ruler. - <strong>Why it matters:</strong> “the model is explainable” is not a fact you can state without naming the metric behind it. For decisions like credit scoring, the law asks for explanations that are “meaningful.” - <strong>How I found it:</strong> one erasure test under three perturbation regimes, a direction-agnostic re-scoring of the conditional regime, and a retrain-based cross-check, all against a calibrated random-ranking floor. - <strong>Practitioner action:</strong> before you trust a SHAP or LIME plot, ask which metric produced it, which perturbation regime, and whether the verdict survives a second dataset.</p>
+<p><strong>The finding, in four lines</strong></p>
+<ul>
+<li><strong>What:</strong> same model: LIME below the random-ranking floor under a signed metric (−0.0305), comfortably above it under a movement metric (+0.090); TreeSHAP inconclusive under the first. Nothing changed but the ruler.</li>
+<li><strong>Why it matters:</strong> “the model is explainable” is not a fact you can state without naming the metric behind it. For decisions like credit scoring, the law asks for explanations that are “meaningful.”</li>
+<li><strong>How I found it:</strong> one erasure test under three perturbation regimes, a direction-agnostic re-scoring of the conditional regime, and a retrain-based cross-check, all against a calibrated random-ranking floor.</li>
+<li><strong>Practitioner action:</strong> before you trust a SHAP or LIME plot, ask which metric produced it, which perturbation regime, and whether the verdict survives a second dataset.</li>
+</ul>
 </blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
