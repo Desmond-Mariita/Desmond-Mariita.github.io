@@ -1,0 +1,31 @@
+# Renders the Quarto site and publishes to GitHub Pages on push to main.
+# NOTE: this file is dormant inside portfolio-hub (workflows only run from a repo
+# root). It activates when site/ becomes the public Desmond-Mariita.github.io repo.
+name: Render and publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.9.38
+
+      - name: Render and publish to gh-pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

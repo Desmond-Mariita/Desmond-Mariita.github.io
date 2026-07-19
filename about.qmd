@@ -1,0 +1,19 @@
+---
+title: "About"
+toc: false
+---
+
+I work at the intersection most people only have one half of: I can **govern data** *and* **technically audit whether an AI system is trustworthy** — fair, transparent, and explainable.
+
+I started in data governance as a Data Steward Facilitator at a 150-branch bank, standing up a brand-new governance function: assigning data ownership, running data stewards, driving data quality, and training the business. Hands-on with Oracle's data-quality and integration stack (EDQ profiling and matching, ODI).
+
+Underneath both is a BSc in Mathematics & Statistics — hypothesis testing, theory of estimation, design and analysis of sample surveys, and quality-control methods. That is the quantitative backbone of audit work: sizing an evaluation, designing an ablation, drawing a defensible sample, and stating "this difference is real, not noise" at a stated confidence level.
+
+Then I went deep on the AI side — an MSc in Cognitive Systems at the University of Potsdam, expected 2026 (machine learning, NLP, data mining, trustworthy AI). My thesis evaluates whether the chain-of-thought *explanations* a vision–language model produces are actually **faithful** to how it really decided, using a perturbation battery that exposes when models rationalize their own mistakes. My open interpretability portfolio extends this across five projects: faithfulness benchmarking of text explainers, modality attribution for multimodal models, calibration versus accuracy trade-offs of interpretable models on clinical data, and mechanistic probing.
+
+That combination is what the EU AI Act era needs: someone who can take a high-risk AI system and produce the evidence — bias and fairness testing, explanation-faithfulness audits, model documentation, data-quality and lineage controls — that transparency and oversight obligations require, while speaking the language of the data governance teams who own the data.
+
+**Open to:** remote / international roles in AI Governance, Responsible AI, AI Assurance / Model Risk, and technical Data Governance. Based in Berlin.
+
+- Flagship audit: [eu-ai-act-credit-assurance](https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance)
+- Interpretability portfolio: [interpretability-foundations](https://github.com/Desmond-Mariita/interpretability-foundations)

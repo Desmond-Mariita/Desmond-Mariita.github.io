@@ -1,0 +1,11 @@
+---
+title: "Writing"
+listing:
+  contents: .
+  sort: ["date desc", "title desc"]
+  type: default
+  fields: [date, title, description, image]
+toc: false
+---
+
+Writeups from the audit work. Every piece links into the tagged repository that produced its numbers.
