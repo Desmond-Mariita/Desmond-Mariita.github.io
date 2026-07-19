@@ -4,7 +4,7 @@ subtitle: "AI Assurance & Data Governance"
 toc: false
 ---
 
-I audit AI systems for trustworthiness — fairness, robustness, recourse, and whether their explanations are faithful — and I govern the data behind them. The output is evidence: reproducible tests, a signed self-assessment opinion, and claims that trace to artifacts.
+I audit AI systems for trustworthiness: fairness, robustness, recourse, and whether their explanations are faithful. I also govern the data behind them. The output is evidence: reproducible tests, a signed self-assessment opinion, and claims that trace to artifacts.
 
 Every writeup here links back to the runnable, tagged repository that produced its numbers. The writeups are the narrative; the repos are the proof.
 
@@ -13,7 +13,7 @@ Every writeup here links back to the runnable, tagged repository that produced i
 ::: {.g-col-12 .g-col-md-4 .hub-col}
 ### Flagship audits
 
-An end-to-end **self-assessment of a high-risk EU AI Act credit-scoring model** across four properties — recourse, fairness, robustness, and a pre-registered explanation-faithfulness audit — with an Annex-IV-style governance pack, a signed audit opinion, and one-command reproduction. The faithfulness hypotheses were committed to a signed, timestamped record before the model was trained.
+An end-to-end **self-assessment of a high-risk EU AI Act credit-scoring model** across four properties (recourse, fairness, robustness, and a pre-registered explanation-faithfulness audit), with an Annex-IV-style governance pack, a signed audit opinion, and one-command reproduction. The faithfulness hypotheses were committed to a signed, timestamped record before the model was trained.
 
 [eu-ai-act-credit-assurance](https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance){.hub-link} (v1.1.2, signed)
 
@@ -27,9 +27,9 @@ Five earlier interpretability projects, among them faithfulness benchmarking, mo
 
 Writeups that live next to the code they describe.
 
-**[When recourse runs backwards](writing/borrow-more/index.qmd)** — the credit model would approve some rejected applicants only if they asked for a *larger* loan. A model-risk case study.
+**[When recourse runs backwards](writing/borrow-more/index.qmd)**: the credit model would approve some rejected applicants only if they asked for a *larger* loan. A model-risk case study.
 
-**[Faithfulness is metric-dependent](writing/faithfulness/index.qmd)** — SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime.
+**[Faithfulness is metric-dependent](writing/faithfulness/index.qmd)**: SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime.
 
 [All writing →](writing/index.qmd)
 :::
@@ -37,7 +37,7 @@ Writeups that live next to the code they describe.
 ::: {.g-col-12 .g-col-md-4 .hub-col}
 ### Credentials
 
-MSc Cognitive Systems, University of Potsdam (expected 2026) — thesis: the faithfulness of chain-of-thought explanations in vision–language models. BSc Mathematics & Statistics. Ex-Data Steward at a 150-branch bank.
+MSc Cognitive Systems, University of Potsdam (expected 2026). Thesis: the faithfulness of chain-of-thought explanations in vision–language models. BSc Mathematics & Statistics. Ex-Data Steward at a 150-branch bank.
 
 Certification track in progress: **IAPP AIGP** (sitting ~Sept 2026), **ForHumanity FHCA**, **ISO/IEC 42001 Lead Auditor**, **AWS AI Practitioner**, **IAPP CIPP/E**.
 

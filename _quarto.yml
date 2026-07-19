@@ -4,7 +4,7 @@ project:
 
 website:
   title: "Desmond Mariita"
-  description: "AI Assurance & Data Governance — EU AI Act, model risk, interpretability"
+  description: "AI Assurance & Data Governance: EU AI Act, model risk, interpretability"
   site-url: https://desmond-mariita.github.io
   open-graph: true
   twitter-card: true
