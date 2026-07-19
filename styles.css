@@ -1,0 +1,37 @@
+/* Light touch on the litera theme — readable article width, quiet accents. */
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Article body width tuned for long-form reading */
+main.content {
+  max-width: 46rem;
+}
+
+/* Tables: allow horizontal scroll on narrow screens instead of breaking layout */
+.table-responsive-wrap table,
+main table {
+  font-size: 0.92rem;
+}
+
+figure img {
+  max-width: 100%;
+}
+
+figcaption {
+  color: #5a6b78;
+  font-size: 0.9rem;
+}
+
+/* Landing-page columns */
+.hub-col h3 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+blockquote {
+  border-left: 3px solid #1f4e79;
+  background: #f3f6f8;
+  padding: 0.75rem 1rem;
+}

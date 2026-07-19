@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Desmond Mariita">
+<meta name="dcterms.date" content="2026-07-19">
+<meta name="description" content="SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime — and the verdicts do not reliably travel across datasets.">
+
+<title>Faithfulness is metric-dependent: a credit-model audit across regimes, signs, and datasets – Desmond Mariita</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-a1e0e591d9e784db91f005ccc1a3bac8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Faithfulness is metric-dependent: a credit-model audit across regimes, signs, and datasets – Desmond Mariita">
+<meta property="og:description" content="SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime — and the verdicts do not reliably travel across datasets.">
+<meta property="og:image" content="https://desmond-mariita.github.io/writing/faithfulness/figures/faithfulness-metric-dependence.png">
+<meta property="og:site_name" content="Desmond Mariita">
+<meta property="og:image:height" content="884">
+<meta property="og:image:width" content="1813">
+<meta name="twitter:title" content="Faithfulness is metric-dependent: a credit-model audit across regimes, signs, and datasets – Desmond Mariita">
+<meta name="twitter:description" content="SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime — and the verdicts do not reliably travel across datasets.">
+<meta name="twitter:image" content="https://desmond-mariita.github.io/writing/faithfulness/figures/faithfulness-metric-dependence.png">
+<meta name="twitter:image-height" content="884">
+<meta name="twitter:image-width" content="1813">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Desmond Mariita</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../writing/index.html"> 
+<span class="menu-text">Writing</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Desmond-Mariita"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/desmond-mariita"> <i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#what-a-faithfulness-test-is-actually-measuring" id="toc-what-a-faithfulness-test-is-actually-measuring" class="nav-link active" data-scroll-target="#what-a-faithfulness-test-is-actually-measuring">What a faithfulness test is actually measuring</a></li>
+  <li><a href="#the-verdict-flips-with-the-metric" id="toc-the-verdict-flips-with-the-metric" class="nav-link" data-scroll-target="#the-verdict-flips-with-the-metric">The verdict flips with the metric</a></li>
+  <li><a href="#what-the-second-dataset-changed" id="toc-what-the-second-dataset-changed" class="nav-link" data-scroll-target="#what-the-second-dataset-changed">What the second dataset changed</a></li>
+  <li><a href="#the-bug-that-fed-lime-impossible-applicants" id="toc-the-bug-that-fed-lime-impossible-applicants" class="nav-link" data-scroll-target="#the-bug-that-fed-lime-impossible-applicants">The bug that fed LIME impossible applicants</a></li>
+  <li><a href="#a-second-method-that-never-touches-an-impossible-row" id="toc-a-second-method-that-never-touches-an-impossible-row" class="nav-link" data-scroll-target="#a-second-method-that-never-touches-an-impossible-row">A second method that never touches an impossible row</a></li>
+  <li><a href="#the-three-dimensions-every-faithfulness-claim-must-state" id="toc-the-three-dimensions-every-faithfulness-claim-must-state" class="nav-link" data-scroll-target="#the-three-dimensions-every-faithfulness-claim-must-state">The three dimensions every faithfulness claim must state</a></li>
+  <li><a href="#why-you-can-believe-any-of-this" id="toc-why-you-can-believe-any-of-this" class="nav-link" data-scroll-target="#why-you-can-believe-any-of-this">Why you can believe any of this</a></li>
+  <li><a href="#what-it-does-not-claim" id="toc-what-it-does-not-claim" class="nav-link" data-scroll-target="#what-it-does-not-claim">What it does not claim</a></li>
+  <li><a href="#back-to-the-beginning" id="toc-back-to-the-beginning" class="nav-link" data-scroll-target="#back-to-the-beginning">Back to the beginning</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Faithfulness is metric-dependent: a credit-model audit across regimes, signs, and datasets</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">AI assurance</div>
+    <div class="quarto-category">interpretability</div>
+    <div class="quarto-category">SHAP</div>
+    <div class="quarto-category">LIME</div>
+    <div class="quarto-category">EU AI Act</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    SHAP and LIME on the same model score as faithful, unfaithful, or inconclusive depending on the metric, sign convention, and perturbation regime — and the verdicts do not reliably travel across datasets.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Desmond Mariita </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 19, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>I set out to test whether my credit model’s explanations were faithful. Same model, same two explainers, and I could make them look faithful, unfaithful, or inconclusive by changing the measurement alone.</p>
+<p>In Part 1, I audited the same model’s <em>decisions</em> and found it would approve some rejected applicants only if they asked for a bigger loan. This piece is about a quieter failure in the same model: whether the <em>explanations</em> we attach to its decisions are telling the truth.</p>
+<blockquote class="blockquote">
+<p><strong>The finding, in four lines</strong> - <strong>What:</strong> same model: LIME below the random-ranking floor under a signed metric (−0.0305), comfortably above it under a movement metric (+0.090); TreeSHAP inconclusive under the first. Nothing changed but the ruler. - <strong>Why it matters:</strong> “the model is explainable” is not a fact you can state without naming the metric behind it. For decisions like credit scoring, the law asks for explanations that are “meaningful.” - <strong>How I found it:</strong> one erasure test under three perturbation regimes, a direction-agnostic re-scoring of the conditional regime, and a retrain-based cross-check, all against a calibrated random-ranking floor. - <strong>Practitioner action:</strong> before you trust a SHAP or LIME plot, ask which metric produced it, which perturbation regime, and whether the verdict survives a second dataset.</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/faithfulness-metric-dependence.png" class="img-fluid figure-img"></p>
+<figcaption>The same model and the same two explainers, scored two ways. Under a signed metric (did the predicted risk fall, net, when the explainer’s top features were erased?) LIME falls below the random-ranking floor and TreeSHAP is inconclusive. Under a direction-agnostic movement metric (did the prediction move at all?) both clear the floor. A random-ranking control sits on the zero line under both.</figcaption>
+</figure>
+</div>
+<section id="what-a-faithfulness-test-is-actually-measuring" class="level2">
+<h2 class="anchored" data-anchor-id="what-a-faithfulness-test-is-actually-measuring">What a faithfulness test is actually measuring</h2>
+<p>For one applicant, SHAP and LIME hand you a ranked list of feature contributions: what moved this score, and which way. A <strong>faithful</strong> explanation is one where that list reflects what the model actually did, rather than a plausible-looking story laid over it.</p>
+<p>There is a standard way to test that, and it is refreshingly blunt. Take the features an explainer calls most important, erase them, and watch how far the model’s predicted risk moves. If the explanation pointed at features the model genuinely leans on, the prediction should move; if it barely moves, the explanation picked the wrong things. The result is compared against a <strong>floor</strong>: the same test averaged over many <em>random</em> feature rankings — in my case across 300 test applicants. A faithful explainer has to beat the floor; a separately drawn random ranking — the control row in the table below — should sit on it.</p>
+<p>That sounds like one number per explainer. It produces several, because three choices in that paragraph are unspecified, and each one moves the verdict.</p>
+</section>
+<section id="the-verdict-flips-with-the-metric" class="level2">
+<h2 class="anchored" data-anchor-id="the-verdict-flips-with-the-metric">The verdict flips with the metric</h2>
+<p>Here is the same erasure test on the audited LightGBM model (German Credit, 300 test applicants), read four ways:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Signed, conditional</th>
+<th>Signed, marginal</th>
+<th>Movement, conditional</th>
+<th>Signed, baseline (fixed reference)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>TreeSHAP</strong></td>
+<td>inconclusive (+0.006, CI spans 0)</td>
+<td>inconclusive (−0.014, CI spans 0)</td>
+<td>faithful (+0.106)</td>
+<td>faithful (+0.074)</td>
+</tr>
+<tr class="even">
+<td><strong>LIME</strong></td>
+<td><strong>below the floor</strong> (−0.0305)</td>
+<td>below the floor (−0.048)</td>
+<td>faithful (+0.090)</td>
+<td>not faithful (+0.017)</td>
+</tr>
+<tr class="odd">
+<td>separate random control</td>
+<td>at the floor (−0.003)</td>
+<td>at the floor (−0.003)</td>
+<td>at the floor (+0.003)</td>
+<td>at the floor (+0.001)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Every cell is the mean difference against the random-ranking floor (the <code>diff_mean</code> fields in the repo’s metrics files, not the raw per-explainer means). The movement column is a post-hoc diagnostic; more on its status below.</em></p>
+<p>The movement metric asks only whether the prediction moved when you erased the top features. Both explainers clearly beat that floor; the separate random control sits on it.</p>
+<p>The signed metric keeps the direction of the change: erasing the features an explanation flags as driving this applicant’s risk should, on net, pull the predicted risk down. By that reading LIME lands below the floor — erasing the features it calls most important moves the predicted risk the wrong way on average — and TreeSHAP is inconclusive, its interval straddling zero. One mechanical caveat: features are ranked by the <em>size</em> of their attribution, so erasing risk-raising and protective features together can cancel, and that cancellation mutes signed scores under realistic perturbations. A signed comprehensiveness score is still the kind a practitioner might report by default, and taken alone it would have left TreeSHAP with no verdict and LIME below the floor. Swap the perturbation from conditional to marginal — replacement values drawn blind to the applicant’s other attributes — and nothing clears the signed test; LIME again lands below the floor.</p>
+<p>The baseline reading replaces features with a fixed reference value rather than a plausible alternative. Only TreeSHAP clears it, and this one rewards attributions that point at high-leverage features regardless of the individual applicant, so I treat it as the weakest of the three regimes.</p>
+<p>None of this makes explanations useless. TreeSHAP is the more consistent explainer; LIME clears the bar only under the movement metric, and its rankings hold up under the global-ranking (ROAR) cross-check. No single score captures that. Report one number and you can clear an explainer, put it below the floor, or leave it with no verdict at all.</p>
+</section>
+<section id="what-the-second-dataset-changed" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-second-dataset-changed">What the second dataset changed</h2>
+<p>I ran the same benchmark, re-parameterised for a smaller feature set (top-5 of 10 features instead of top-10 of 20), on a structurally different dataset: Give Me Some Credit — all-numeric features, heavily imbalanced (about 6.7% of borrowers default), subsampled to 6,000 rows, a separate LightGBM (test AUROC 0.827). The headline held. Both explainers beat the movement floor, TreeSHAP ahead of LIME, the random-ranking control on the floor.</p>
+<p>What did not travel was the fine print. On German Credit the signed metric was inconclusive for TreeSHAP; on Give Me Some Credit, TreeSHAP comes out faithful under that same signed metric — one plausible contributor is that all-numeric features are less prone to the sign cancellation that muddies German Credit’s one-hot categories. The shuffled-label control that barely held on the first dataset behaves differently on the second, and LIME’s marginal and baseline verdicts changed too. So the conclusion is sharper than “it depends on the metric”: faithfulness verdicts do not reliably travel across datasets.</p>
+</section>
+<section id="the-bug-that-fed-lime-impossible-applicants" class="level2">
+<h2 class="anchored" data-anchor-id="the-bug-that-fed-lime-impossible-applicants">The bug that fed LIME impossible applicants</h2>
+<p>Part 1 mentioned that one of the most popular explanation tools was quietly producing impossible applicants. This is where that thread ends.</p>
+<p>LIME explains a prediction by inventing a cloud of similar-but-slightly-different applicants around the real one, asking the model to score each, and fitting a simple local model to the results. The catch is in “slightly different.” My inputs had one-hot categoricals: blocks of columns where exactly one is a 1, encoding a single choice like housing status. LIME’s default perturbation flipped those columns independently. The result was a neighbourhood full of applicants who were simultaneously renting and owning, or neither, or three things at once. A review pass that executed the sampler and inspected its output put a number on it: 99.9% of LIME’s sampled neighbourhoods were off-manifold, invalid combinations no real applicant could take. LIME was building its explanation of a coherent model out of incoherent data.</p>
+<p>The fix took three iterations, each disclosed in the repo: I turned discretisation back on, since my earlier run had disabled a LIME default (removing, along the way, a suspicious perfect-stability artifact); a first pass at declaring the categorical columns still sampled the dummy columns independently, so I finally rebuilt the sampling to run LIME in a label-encoded space where every generated neighbour is a valid one-hot — verified 100% valid.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># before: one-hot dummies perturbed independently -&gt; ~99.9% impossible neighbours</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>explainer <span class="op">=</span> LimeTabularExplainer(X_onehot, categorical_features<span class="op">=</span>dummy_cols, ...)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># after: perturb in label-encoded space, re-expand to valid one-hots for the model</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>explainer <span class="op">=</span> LimeTabularExplainer(X_labelenc, categorical_features<span class="op">=</span><span class="bu">range</span>(n_cats), ...)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>exp <span class="op">=</span> explainer.explain_instance(x, <span class="kw">lambda</span> Z: model.predict_proba(expand_onehot(Z)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Schematic — the exact implementation ships in the repo.)</em></p>
+<p>I cannot honestly compare new numbers with old: an invalid run is not a baseline. What I can say is that the group-valid LIME, the first version whose numbers mean anything, is the one that falls below the floor under the signed metric. Cleaning up the method did not rescue the explainer. It produced the first honest measurement of it, and the measurement is the weaker one.</p>
+</section>
+<section id="a-second-method-that-never-touches-an-impossible-row" class="level2">
+<h2 class="anchored" data-anchor-id="a-second-method-that-never-touches-an-impossible-row">A second method that never touches an impossible row</h2>
+<p>Every test so far shares a weakness: erasing features can push the model off the data it was trained on, and odd behaviour on implausible inputs is weak evidence about an explanation. So I cross-checked with RemOve-And-Retrain, a method that never feeds the model a weird row. Take each explainer’s global feature ranking, delete its top features from the data, retrain the model from scratch, and measure how much test AUROC you lose. If a ranking pointed at genuinely important features, the retrained model should be meaningfully worse. Over eight stratified re-splits of the same data:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ranking</th>
+<th>mean test-AUROC drop (8 splits)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TreeSHAP</td>
+<td>0.108</td>
+</tr>
+<tr class="even">
+<td>LIME</td>
+<td>0.109</td>
+</tr>
+<tr class="odd">
+<td>the model’s own gain</td>
+<td>0.098</td>
+</tr>
+<tr class="even">
+<td>random</td>
+<td>0.036</td>
+</tr>
+</tbody>
+</table>
+<p>Both explainers degrade the model about three times as much as a random ranking, on every one of the eight splits. Their rankings identify feature groups that carry genuinely predictive signal. ROAR does not distinguish TreeSHAP from LIME, though: on a deliberately coarse yardstick — a mean difference bigger than two standard errors — the gap is −0.001, and TreeSHAP wins four splits of eight. The “TreeSHAP beats LIME” ordering from the erasure tests does not reproduce. ROAR corroborates, through a completely different mechanism, that both explainers carry real signal — while refusing to crown a winner. It also only speaks to <em>global</em> feature-ranking utility, not to whether any single applicant’s explanation is faithful, and I do not stretch it past that.</p>
+</section>
+<section id="the-three-dimensions-every-faithfulness-claim-must-state" class="level2">
+<h2 class="anchored" data-anchor-id="the-three-dimensions-every-faithfulness-claim-must-state">The three dimensions every faithfulness claim must state</h2>
+<p>“Faithful” is not a property of an explainer. It is a property of an explainer <em>under a stated metric, a stated perturbation regime, and a stated sign convention</em>. Leave any of the three unstated and the claim is not checkable, because a different reasonable choice can reverse it. That makes it a reporting requirement rather than a framework to adopt: state the three, and another practitioner can rerun you.</p>
+<p>In practice, before you believe an attribution plot:</p>
+<ul>
+<li><strong>Which perturbation regime produced it?</strong> Conditional, marginal, and baseline erasure can disagree, and the baseline version quietly rewards features that are important on average rather than for this person.</li>
+<li><strong>Is it group-valid?</strong> If your data has one-hot categories, confirm the method is not sampling impossible rows. That single bug is why my first LIME numbers were meaningless.</li>
+<li><strong>Does it survive both a signed and a direction-agnostic metric?</strong> If they disagree, investigate before you average — in my case the disagreement traced to sign cancellation, but noise alone can produce it.</li>
+<li><strong>Does it hold on a second dataset?</strong> Mine mostly did; the fine print did not. Run it anyway.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>If you sign off on model explanations:</strong> the EU AI Act’s Article 86 gives affected people the right to obtain from the deployer “clear and meaningful explanations of the role of the AI system in the decision-making procedure and the main elements of the decision taken” — the conditions are specific, and credit scoring sits on Annex III’s high-risk list. The GDPR requires “meaningful information about the logic involved” for the automated decisions Article 22 covers (Articles 13 to 15). Neither text uses the word faithful — my reading is that both presuppose it, because an explanation that misstates what drove the model is not meaningful information about its logic. This audit shows that faithfulness is conditional on how it is measured. So a report that states a single comprehensiveness score, with none of the three choices behind it, is not sufficient evidence that the explanation is faithful — the thing the duty presupposes. A deployer putting a SHAP plot in front of a loan officer or a declined applicant is making a faithfulness claim, whether they know it or not.</p>
+</blockquote>
+</section>
+<section id="why-you-can-believe-any-of-this" class="level2">
+<h2 class="anchored" data-anchor-id="why-you-can-believe-any-of-this">Why you can believe any of this</h2>
+<p>I pre-registered the four hypotheses and the primary metric in a signed, timestamped record before running anything, anchored to a public blockchain block. I then reported all four as they landed: two refuted, one supported, one fragile. The prediction that TreeSHAP would be faithful under the signed conditional test on German Credit is one of the two I had to mark refuted. I did not manufacture an adverse finding, and I did not quietly upgrade the metric that would have flattered my own model. Throughout, a random-ranking control sits on the floor under every tested metric-regime combination. That is the calibration check I lean on. The off-manifold LIME bug was caught by a panel of separate AI models reviewing the work, which is quality control, not independent human assurance, and I say so in the repo.</p>
+</section>
+<section id="what-it-does-not-claim" class="level2">
+<h2 class="anchored" data-anchor-id="what-it-does-not-claim">What it does not claim</h2>
+<p>This is a self-assessment of two explainers on one model per dataset, not a general verdict on SHAP or LIME. The movement metric is calibration-checked — a random ranking lands on its floor — but it is not validated against a known-faithful explanation, so I treat its results as exploratory. ROAR separately confirms that the global rankings point at genuinely predictive feature groups; it cannot vouch for any individual explanation. A confounded control, a model trained on shuffled labels, also clears the movement bar, which is part of why I call that bar lenient. The perturbation is approximate: a nearest-neighbour donor imputation whose residual off-manifoldness I measure rather than eliminate. And the sample is small, 300 applicants per dataset, with high per-instance variance.</p>
+<p>It is also still missing the same thing Part 1 was: an independent human reviewer who built neither the model nor the audit.</p>
+<p>That gap is the one I cannot close by myself. The repo ships a structured reviewer template, and if you have the background and had no hand in this work, I will publish your verdict in full, including the parts where you say I got it wrong.</p>
+</section>
+<section id="back-to-the-beginning" class="level2">
+<h2 class="anchored" data-anchor-id="back-to-the-beginning">Back to the beginning</h2>
+<p>Both pieces are the same lesson from two angles: an audit is only as honest as the choices it refuses to leave unstated. In Part 1 the unstated choice was the direction I searched. Here it was the ruler.</p>
+<p>The full benchmark, the pre-registered hypotheses, the signed audit opinion, and the evidence trail are here: <a href="https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance">eu-ai-act-credit-assurance</a>. If you missed the decision-side story, that is <a href="../../writing/borrow-more/index.html">Part 1</a>. I am moving into AI assurance and governance work. If your team needs results that state which metric produced them, I would like to hear from you.</p>
+<p><em>Prefer a typeset copy? <a href="article-part2-faithfulness.pdf">Download the PDF</a>.</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/desmond-mariita\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Desmond Mariita</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org">Quarto</a>. Source and evidence: <a href="https://github.com/Desmond-Mariita/eu-ai-act-credit-assurance">eu-ai-act-credit-assurance</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
